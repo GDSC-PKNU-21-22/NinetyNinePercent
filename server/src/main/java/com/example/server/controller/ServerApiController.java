@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.OurServer;
 import com.example.server.dto.SearchReq;
+import com.example.server.model.LongLat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class ServerApiController {
                 .queryParam("serviceKey", serviceKey)
                 .queryParam("WGS84_LON",127.08515659273706)
                 .queryParam("WGS84_LAT",37.488132562487905)
-                .queryParam("numOfRows",10)
+                .queryParam("numOfRows",20)
                 .queryParam("pageNo",1)
                 .encode(Charset.forName("UTF-8"))
                 .build()
@@ -46,4 +47,32 @@ public class ServerApiController {
         return result.getBody();
     }
 
+    @PostMapping("/location2")
+    public String findEmer(@RequestBody LongLat ll){
+        double lon = ll.getLongitude();
+        double lat = ll.getLatitude();
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://apis.data.go.kr")
+                .path("/B552657/ErmctInfoInqireService/getEgytLcinfoInqire")
+                .queryParam("serviceKey", serviceKey)
+                .queryParam("WGS84_LON",lon)
+                .queryParam("WGS84_LAT",lat)
+                .queryParam("numOfRows",20)
+                .queryParam("pageNo",1)
+                .encode(Charset.forName("UTF-8"))
+                .build()
+                .toUri();
+
+        log.info("uri : {}", uri);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        RequestEntity<Void> req = RequestEntity
+                .get(uri)
+                .build();
+
+        ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+        return result.getBody();
+    }
 }
