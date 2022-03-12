@@ -15,3 +15,17 @@ class LocationModel extends ChangeNotifier {
   }
 }
 
+class CurrentLocation extends ChangeNotifier {
+  double _longitude = 0;
+  double _latitude = 0;
+
+  double get latitude => _latitude;
+
+  double get longitude => _longitude;
+
+  void setLocation(double long, double lat) {
+    _longitude = long;
+    _latitude = lat;
+    notifyListeners();
+  }
+}

@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:my_app/location.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +32,11 @@ Future<List<HosLocation>> getLocation() async {
   return list;
 }
 
-Future<List<HosLocation>> postLocation() async {
+Future<List<HosLocation>> postLocation(BuildContext context) async {
   var position = await _determinePosition();
+
+  // print(position);
+  context.read<CurrentLocation>().setLocation(position.longitude, position.latitude);
 
   final response = await http.post(
       Uri.parse('http://127.0.0.1:9090/api/server/location2'),
@@ -49,37 +51,37 @@ Future<List<HosLocation>> postLocation() async {
   var ss = response.body;
   print(ss);
 
-  List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes))['response']
-      ['body']['items']['item'];
+  // List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes))['response']
+  //     ['body']['items']['item'];
 
   List<HosLocation> list = [];
 
-  // list.add(const HosLocation(
-  //   longitude: 127.11,
-  //   latitude: 32.22,
-  //   dutyTel: "052-265-1376",
-  //   distance: 3,
-  //   dutyAdd: "수영구 남천동",
-  //   dutyName: '병원1',
-  // ));
-  // list.add(const HosLocation(
-  //   longitude: 127.11,
-  //   latitude: 32.22,
-  //   dutyTel: "052-265-1376",
-  //   distance: 3,
-  //   dutyAdd: "수영구 남천동",
-  //   dutyName: '병원2',
-  // ));
-  // list.add(const HosLocation(
-  //   longitude: 127.11,
-  //   latitude: 32.22,
-  //   dutyTel: "052-265-1376",
-  //   distance: 3,
-  //   dutyAdd: "수영구 남천동",
-  //   dutyName: '병원3',
-  // ));
+  list.add(const HosLocation(
+    longitude: 127.11,
+    latitude: 32.22,
+    dutyTel: "052-265-1376",
+    distance: 3,
+    dutyAdd: "수영구 남천동",
+    dutyName: '병원1',
+  ));
+  list.add(const HosLocation(
+    longitude: 127.11,
+    latitude: 32.22,
+    dutyTel: "052-265-1376",
+    distance: 3,
+    dutyAdd: "수영구 남천동",
+    dutyName: '병원2',
+  ));
+  list.add(const HosLocation(
+    longitude: 127.11,
+    latitude: 32.22,
+    dutyTel: "052-265-1376",
+    distance: 3,
+    dutyAdd: "수영구 남천동",
+    dutyName: '병원3',
+  ));
   if (response.statusCode == 200) {
-    list = data.map((e) => HosLocation.fromJson(e)).toList();
+    // list = data.map((e) => HosLocation.fromJson(e)).toList();
   }
   return list;
 }
@@ -170,14 +172,26 @@ Future<Position> _determinePosition() async {
 // }
 
 class _MyListPageState extends State<MyListPage> {
+  late List<HosLocation> locations;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _post(context);
+  }
+  void _post(BuildContext context) async {
+    locations = await postLocation(context);
+    context.read<LocationModel>().list = locations;
+  }
+
   @override
   Widget build(BuildContext context) {
     var watch = context.watch<LocationModel>().list;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('99%'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('99%'),
+      // ),
       body: Column(
         children: <Widget>[
           Expanded(
