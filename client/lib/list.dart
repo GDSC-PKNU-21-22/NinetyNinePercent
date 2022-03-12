@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:my_app/location.dart';
+import 'package:provider/provider.dart';
+
+import 'location_model.dart';
 
 class MyListPage extends StatefulWidget {
   const MyListPage({Key? key, required this.title}) : super(key: key);
@@ -15,50 +19,21 @@ class MyListPage extends StatefulWidget {
   State<MyListPage> createState() => _MyListPageState();
 }
 
-class Location {
-  final String dutyName;
-  final dynamic dutyAdd;
-  final dynamic dutyTel;
-  final dynamic latitude;
-  final dynamic longitude;
-  final dynamic distance;
-
-  const Location(
-      {required this.dutyName,
-      required this.dutyAdd,
-      required this.dutyTel,
-      required this.latitude,
-      required this.longitude,
-      required this.distance});
-
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
-        dutyName: json['dutyName'],
-        dutyAdd: json['dutyAdd'],
-        dutyTel: json['dutyTel1'],
-        latitude: json['latitude'],
-        longitude: json['longitude'],
-        distance: json['distance']);
-  }
-}
-
-Future<List<Location>> getLocation() async {
-  var position = await _determinePosition();
-  print(position);
+Future<List<HosLocation>> getLocation() async {
 
   final response =
       await http.get(Uri.parse('http://127.0.0.1:9090/api/server/location'));
   List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes))['response']
       ['body']['items']['item'];
-  print(data);
-  List<Location> list = [];
+
+  List<HosLocation> list = [];
   if (response.statusCode == 200) {
-    list = data.map((e) => Location.fromJson(e)).toList();
+    list = data.map((e) => HosLocation.fromJson(e)).toList();
   }
   return list;
 }
 
-Future<List<Location>> postLocation() async {
+Future<List<HosLocation>> postLocation() async {
   var position = await _determinePosition();
 
   final response = await http.post(
@@ -71,11 +46,40 @@ Future<List<Location>> postLocation() async {
         'latitude': position.latitude
       }));
 
+  var ss = response.body;
+  print(ss);
+
   List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes))['response']
       ['body']['items']['item'];
-  List<Location> list = [];
+
+  List<HosLocation> list = [];
+
+  // list.add(const HosLocation(
+  //   longitude: 127.11,
+  //   latitude: 32.22,
+  //   dutyTel: "052-265-1376",
+  //   distance: 3,
+  //   dutyAdd: "수영구 남천동",
+  //   dutyName: '병원1',
+  // ));
+  // list.add(const HosLocation(
+  //   longitude: 127.11,
+  //   latitude: 32.22,
+  //   dutyTel: "052-265-1376",
+  //   distance: 3,
+  //   dutyAdd: "수영구 남천동",
+  //   dutyName: '병원2',
+  // ));
+  // list.add(const HosLocation(
+  //   longitude: 127.11,
+  //   latitude: 32.22,
+  //   dutyTel: "052-265-1376",
+  //   distance: 3,
+  //   dutyAdd: "수영구 남천동",
+  //   dutyName: '병원3',
+  // ));
   if (response.statusCode == 200) {
-    list = data.map((e) => Location.fromJson(e)).toList();
+    list = data.map((e) => HosLocation.fromJson(e)).toList();
   }
   return list;
 }
@@ -117,17 +121,59 @@ Future<Position> _determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
+// class _MyListPageState extends State<MyListPage> {
+//   late Future<List<HosLocation>> futurePlace;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     futurePlace = postLocation();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('99%'),
+//       ),
+//       body: Column(
+//         children: <Widget>[
+//           Expanded(
+//               child: FutureBuilder<List<HosLocation>>(
+//             future: futurePlace,
+//             builder: (context, snapshot) {
+//               if (snapshot.hasData) {
+//                 return ListView.builder(
+//                   itemCount: snapshot.data!.length,
+//                   itemBuilder: (context, index) {
+//                     HosLocation location = snapshot.data![index];
+//                     return Card(
+//                       child: ListTile(
+//                         title: Text('${location.dutyName}'),
+//                         subtitle: Text('${location.dutyTel}'),
+//                       ),
+//                     );
+//                   },
+//                   scrollDirection: Axis.vertical,
+//                   shrinkWrap: true,
+//                 );
+//               } else if (snapshot.hasError) {
+//                 return Text('${snapshot.error}');
+//               }
+//               return Text('로딩중');
+//             },
+//           )),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 class _MyListPageState extends State<MyListPage> {
-  late Future<List<Location>> futurePlace;
-
-  @override
-  void initState() {
-    super.initState();
-    futurePlace = getLocation();
-  }
-
   @override
   Widget build(BuildContext context) {
+    var watch = context.watch<LocationModel>().list;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('99%'),
@@ -135,30 +181,21 @@ class _MyListPageState extends State<MyListPage> {
       body: Column(
         children: <Widget>[
           Expanded(
-              child: FutureBuilder<List<Location>>(
-            future: futurePlace,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    Location location = snapshot.data![index];
-                    return Card(
-                      child: ListTile(
-                        title: Text('${location.dutyName}'),
-                        subtitle: Text('${location.dutyTel}'),
-                      ),
-                    );
-                  },
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
+            child: ListView.builder(
+              itemCount: watch.length,
+              itemBuilder: (context, index) {
+                HosLocation location = watch[index];
+                return Card(
+                  child: ListTile(
+                    title: Text('${location.dutyName}'),
+                    subtitle: Text('${location.dutyTel}'),
+                  ),
                 );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              return Text('로딩중');
-            },
-          )),
+              },
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+            ),
+          ),
         ],
       ),
     );

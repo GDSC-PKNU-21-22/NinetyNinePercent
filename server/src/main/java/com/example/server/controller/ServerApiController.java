@@ -73,6 +73,7 @@ public class ServerApiController {
                 .build();
 
         ResponseEntity<String> result = restTemplate.exchange(req, String.class);
+//        System.out.println(result.getBody());
         return result.getBody();
     }
 }
