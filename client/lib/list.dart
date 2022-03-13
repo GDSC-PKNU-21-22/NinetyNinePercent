@@ -48,33 +48,37 @@ Future<List<HosLocation>> postLocation(BuildContext context) async {
         'latitude': position.latitude
       }));
 
-  var ss = response.body;
-  print(ss);
+  print(response.body);
 
-  // List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes))['response']
-  //     ['body']['items']['item'];
+  // List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes))['response']['body']['items']['item'];
+  // var data = jsonDecode(utf8.decode(response.bodyBytes))['response']['body']['items']['item'];
+  // print(data);
+  // print(data.runtimeType);
 
   List<HosLocation> list = [];
 
+  //37.49051807153993, 127.08579703806154
+  //37.480547918511505, 127.0839731033691
+  //37.490783111317356, 127.1003353459397
   list.add(const HosLocation(
-    longitude: 127.11,
-    latitude: 32.22,
+    longitude: 127.08579703806154,
+    latitude: 37.49051807153993,
     dutyTel: "052-265-1376",
     distance: 3,
     dutyAdd: "수영구 남천동",
     dutyName: '병원1',
   ));
   list.add(const HosLocation(
-    longitude: 127.11,
-    latitude: 32.22,
+    longitude: 127.0839731033691,
+    latitude: 37.480547918511505,
     dutyTel: "052-265-1376",
     distance: 3,
     dutyAdd: "수영구 남천동",
     dutyName: '병원2',
   ));
   list.add(const HosLocation(
-    longitude: 127.11,
-    latitude: 32.22,
+    longitude: 127.1003353459397,
+    latitude: 37.490783111317356,
     dutyTel: "052-265-1376",
     distance: 3,
     dutyAdd: "수영구 남천동",

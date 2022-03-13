@@ -14,6 +14,22 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   final Completer<GoogleMapController> _controller = Completer();
+  List<Marker> _markers = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    var list = context.read<LocationModel>().list;
+    for (int i = 0; i < list.length; i++) {
+      _markers.add(Marker(
+        markerId: MarkerId('$i'),
+        onTap: () => print(list[i].dutyName),
+        position: LatLng(list[i].latitude, list[i].longitude),
+      ));
+    }
+  }
 
   // 초기 카메라 위치
   static const CameraPosition _kGooglePlex = CameraPosition(
@@ -41,6 +57,7 @@ class MapSampleState extends State<MapSample> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+        markers: Set.from(_markers),
       ),
 
       // floatingActionButton을 누르게 되면 _goToTheLake 실행된다.

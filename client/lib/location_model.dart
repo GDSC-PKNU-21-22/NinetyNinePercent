@@ -8,9 +8,6 @@ class LocationModel extends ChangeNotifier {
 
   set list(List<HosLocation> value) {
     _list = value;
-    for (var o in _list) {
-      print('$o');
-    }
     notifyListeners();
   }
 }
