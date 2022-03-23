@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53232828-1760-4da5-8816-327a1deed647" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../client/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../client/windows/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
