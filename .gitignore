@@ -44,3 +44,9 @@ client/app.*.map.json
 client/android/app/debug
 client/android/app/profile
 client/android/app/release
+
+# server idea, gradle
+server/.gradle
+server/.idea
+server/build
+server/.DS_Store
